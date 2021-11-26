@@ -211,7 +211,7 @@ async function assetunstake(assetId) {
     try {
 
       var data1 = {
-        asset_id: [assetId]
+        asset_ids: [assetId]
       };
       const result = await wallet_transact([{
         account: contract,
