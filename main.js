@@ -154,7 +154,7 @@ async function buypack(template,price,qty){
         data: {
           from: wallet_userAccount,
           to: marketContract,
-          quantity: price.toString() + " RAREX", 
+          quantity: (price).toString() + " RAREX", 
           memo: template + "%pack"
         },
       }, ]);
@@ -169,26 +169,25 @@ async function buypack(template,price,qty){
   }
 }
 
-async function levelup(assetId) {
+async function levelup(assetId,price) {
 
   if (loggedIn) {
 
     HideMessage();
 
     try {
-
       const result = await wallet_transact([{
-        account: contract,
-        name: "upgradelevel",
+        account: "rarecitytokn",
+        name: "transfer",
         authorization: [{
           actor: wallet_userAccount,
           permission: anchorAuth
         }],
         data: {
-          asset_id: assetId,
-          owner: wallet_userAccount,
-          level: "",
-          quantity: ""
+          from: wallet_userAccount,
+          to: marketContract,
+          quantity: price.toString() + ".0000 RAREX", 
+          memo: assetId + "%levelup"
         },
       }, ]);
       ShowToast("Leveled Up Successfully");
@@ -610,7 +609,7 @@ function PopulateShop(pack_data){
     rate.className = 'ratesText';
     rate.textContent = pack_data[index].price;
     var sym = document.createElement('p');
-    sym.textContent = "RARc";
+    sym.textContent = "RAREX";
 
     var div5 = document.createElement('div');
     div5.className = 'ratediv';
@@ -631,8 +630,10 @@ function PopulateShop(pack_data){
     btn.id = pack_data[index].id;
     btn.className = "stkbtn";
     btn.textContent = "BUY";
+    let r=pack_data[index].price;
+    let x=parseFloat(buyqty.value).toFixed(4);
     btn.onclick = async function buy(){
-      buypack(btn.id,rate.textContent,buyqty.value);
+      buypack(btn.id,r,x);
     }
 
     div4.appendChild(rate);div4.appendChild(sym);
@@ -661,7 +662,7 @@ function PopulateMenu(rates,staked, unstakeasset, user, balance) {
     ids.push(parseInt(unstaked[i].asset_id));
   }
 
-  document.getElementById('balance').innerHTML = balance + " RARc";
+  document.getElementById('balance').innerHTML = balance + " RAREX";
   colls = document.getElementById('sidebar-content');
   for(var index = 0; index < rates.length; index++){
     pools += '<div><button class = "collectonsbtn" id='+rates[index].pool+' onclick="switchtodiffcoll('+rates[index].pool+')">';
@@ -725,7 +726,7 @@ function PopulateMenu(rates,staked, unstakeasset, user, balance) {
     rate.className = 'ratesText';
     rate.textContent = unstaked[index].rateperday.toFixed(4);
     var sym = document.createElement('p');
-    sym.textContent = "RARc";
+    sym.textContent = "RAREX";
     div4.appendChild(rate);div4.appendChild(sym);
     container.appendChild(div4);
 
@@ -743,9 +744,10 @@ function PopulateMenu(rates,staked, unstakeasset, user, balance) {
     let levelbtn = document.createElement('BUTTON');
     levelbtn.textContent = 'Level UP';
     levelbtn.className = "levelbtn";
+    let id =unstaked[index].asset_id;
+    let pricex = unstaked[index].price;
     levelbtn.onclick = async function level(){
-      //id = div2.textContent;
-      //await levelup(id);
+       levelup(id,pricex);
     };
     bar.appendChild(stkbtn);
     if(switchtostaked)bar.appendChild(levelbtn);
